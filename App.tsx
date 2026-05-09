@@ -49,6 +49,7 @@ type ClothingItem = {
   brand: string;
   condition: string;
   estimatedPrice: string;
+  imageUri?: string;
 };
 
 type MarketItem = {
@@ -68,7 +69,7 @@ const tabs: TabItem[] = [
   { key: 'profile', label: '個人檔案', title: '個人檔案', icon: '○' },
 ];
 
-const clothingItems: ClothingItem[] = [
+const initialClothingItems: ClothingItem[] = [
   {
     id: '1',
     name: '奶油針織衫',
@@ -137,6 +138,7 @@ const marketItems: MarketItem[] = [
 export default function App() {
   const [activeTab, setActiveTab] = React.useState<TabKey>('closet');
   const [isUploadVisible, setUploadVisible] = React.useState(false);
+  const [clothingItems, setClothingItems] = React.useState<ClothingItem[]>(initialClothingItems);
   const [selectedItem, setSelectedItem] = React.useState<ClothingItem | null>(null);
   const [isSellSuccessVisible, setSellSuccessVisible] = React.useState(false);
   const { width } = useWindowDimensions();
@@ -151,13 +153,21 @@ export default function App() {
     setSellSuccessVisible(true);
   };
 
+  const handleSaveClothingItem = (item: ClothingItem) => {
+    setClothingItems((currentItems) => [item, ...currentItems]);
+    setUploadVisible(false);
+    Alert.alert('已成功加入衣櫥');
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.appShell}>
         <Header activeTab={activeTab} />
         <View style={styles.content}>
-          {activeTab === 'closet' && <ClosetGrid columns={columns} onItemPress={setSelectedItem} />}
+          {activeTab === 'closet' && (
+            <ClosetGrid columns={columns} items={clothingItems} onItemPress={setSelectedItem} />
+          )}
           {activeTab === 'market' && <MarketScreen columns={columns} />}
           {activeTab !== 'closet' && activeTab !== 'market' && <ComingSoon tab={activeTab} />}
         </View>
@@ -173,7 +183,11 @@ export default function App() {
             <Text style={styles.fabIcon}>+</Text>
           </Pressable>
         )}
-        <UploadItemModal visible={isUploadVisible} onClose={() => setUploadVisible(false)} />
+        <UploadItemModal
+          visible={isUploadVisible}
+          onClose={() => setUploadVisible(false)}
+          onSave={handleSaveClothingItem}
+        />
         <ItemDetailModal
           item={selectedItem}
           isSellSuccessVisible={isSellSuccessVisible}
@@ -204,15 +218,17 @@ function Header({ activeTab }: { activeTab: TabKey }) {
 
 function ClosetGrid({
   columns,
+  items,
   onItemPress,
 }: {
   columns: number;
+  items: ClothingItem[];
   onItemPress: (item: ClothingItem) => void;
 }) {
   return (
     <FlatList
       key={`closet-${columns}`}
-      data={clothingItems}
+      data={items}
       numColumns={columns}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.gridContent}
@@ -222,7 +238,7 @@ function ClosetGrid({
         <View style={styles.sectionHeader}>
           <View>
             <Text style={styles.sectionTitle}>最近新增</Text>
-            <Text style={styles.sectionSubtitle}>6 件單品可搭配或上架</Text>
+            <Text style={styles.sectionSubtitle}>{items.length} 件單品可搭配或上架</Text>
           </View>
           <Pressable style={styles.filterPill} accessibilityRole="button" accessibilityLabel="篩選衣櫥單品">
             <Text style={styles.filterIcon}>☰</Text>
@@ -243,9 +259,15 @@ function ClosetItemCard({ item, onPress }: { item: ClothingItem; onPress: () => 
       accessibilityLabel={`查看 ${item.name} 詳情`}
       onPress={onPress}
     >
-      <View style={[styles.placeholder, { backgroundColor: item.color }]}>
-        <View style={styles.hangerLine} />
-        <Text style={styles.placeholderIcon}>◇</Text>
+      <View style={[styles.placeholder, { backgroundColor: item.color }, item.imageUri && styles.placeholderWithImage]}>
+        {item.imageUri ? (
+          <Image source={{ uri: item.imageUri }} style={styles.closetItemImage} resizeMode="cover" />
+        ) : (
+          <>
+            <View style={styles.hangerLine} />
+            <Text style={styles.placeholderIcon}>◇</Text>
+          </>
+        )}
       </View>
       <Text style={styles.itemName}>{item.name}</Text>
       <Text style={styles.itemCategory}>{item.category}</Text>
@@ -295,12 +317,28 @@ function MarketItemCard({ item }: { item: MarketItem }) {
   );
 }
 
-function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+function UploadItemModal({
+  visible,
+  onClose,
+  onSave,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onSave: (item: ClothingItem) => void;
+}) {
   const [category, setCategory] = React.useState('上衣');
   const [color, setColor] = React.useState('柔和象牙白');
   const [brand, setBrand] = React.useState('無品牌');
   const [condition, setCondition] = React.useState('極佳');
   const [selectedImageUri, setSelectedImageUri] = React.useState<string | null>(null);
+
+  const resetForm = () => {
+    setCategory('上衣');
+    setColor('柔和象牙白');
+    setBrand('無品牌');
+    setCondition('極佳');
+    setSelectedImageUri(null);
+  };
 
   const handlePickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -322,8 +360,27 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
     }
   };
 
+  const handleSave = () => {
+    onSave({
+      id: `upload-${Date.now()}`,
+      name: '新衣物',
+      category: category.trim() || '新衣物',
+      color: '#E8DDCF',
+      brand: brand.trim() || '無品牌',
+      condition: condition.trim() || '極佳',
+      estimatedPrice: '$0',
+      imageUri: selectedImageUri ?? undefined,
+    });
+    resetForm();
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
       <SafeAreaView style={styles.uploadSafeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -334,7 +391,7 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
               style={styles.closeButton}
               accessibilityRole="button"
               accessibilityLabel="關閉新增衣物"
-              onPress={onClose}
+              onPress={handleClose}
             >
               <Text style={styles.closeButtonText}>×</Text>
             </Pressable>
@@ -397,7 +454,7 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
               style={styles.saveButton}
               accessibilityRole="button"
               accessibilityLabel="儲存衣物至衣櫥"
-              onPress={onClose}
+              onPress={handleSave}
             >
               <Text style={styles.saveButtonText}>儲存至衣櫥</Text>
             </Pressable>
@@ -659,6 +716,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 18,
     elevation: 3,
+  },
+  placeholderWithImage: {
+    overflow: 'hidden',
+  },
+  closetItemImage: {
+    borderRadius: 24,
+    height: '100%',
+    width: '100%',
   },
   hangerLine: {
     backgroundColor: 'rgba(111, 83, 60, 0.18)',
