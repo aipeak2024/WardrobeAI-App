@@ -139,8 +139,12 @@ export default function App() {
   const { width } = useWindowDimensions();
   const columns = width >= 720 ? 3 : 2;
 
-  const handleSellItem = () => {
+  const closeItemDetail = () => {
     setSelectedItem(null);
+    setSellSuccessVisible(false);
+  };
+
+  const handleSellItem = () => {
     setSellSuccessVisible(true);
   };
 
@@ -167,8 +171,13 @@ export default function App() {
           </Pressable>
         )}
         <UploadItemModal visible={isUploadVisible} onClose={() => setUploadVisible(false)} />
-        <ItemDetailModal item={selectedItem} onClose={() => setSelectedItem(null)} onSell={handleSellItem} />
-        <SellSuccessModal visible={isSellSuccessVisible} onClose={() => setSellSuccessVisible(false)} />
+        <ItemDetailModal
+          item={selectedItem}
+          isSellSuccessVisible={isSellSuccessVisible}
+          onClose={closeItemDetail}
+          onSell={handleSellItem}
+          onSellSuccessClose={closeItemDetail}
+        />
       </View>
     </SafeAreaView>
   );
@@ -366,12 +375,16 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
 
 function ItemDetailModal({
   item,
+  isSellSuccessVisible,
   onClose,
   onSell,
+  onSellSuccessClose,
 }: {
   item: ClothingItem | null;
+  isSellSuccessVisible: boolean;
   onClose: () => void;
   onSell: () => void;
+  onSellSuccessClose: () => void;
 }) {
   return (
     <Modal visible={Boolean(item)} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -410,33 +423,37 @@ function ItemDetailModal({
                 accessibilityRole="button"
                 accessibilityLabel={`Sell ${item.name} on Market with an 8 percent fee`}
                 onPress={onSell}
+                hitSlop={10}
               >
                 <Text style={styles.sellButtonText}>Sell on Market (8% Fee)</Text>
               </Pressable>
             </View>
           </ScrollView>
         )}
+        <SellSuccessModal visible={isSellSuccessVisible} onClose={onSellSuccessClose} />
       </SafeAreaView>
     </Modal>
   );
 }
 
 function SellSuccessModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
-      <View style={styles.successOverlay}>
-        <View style={styles.successCard}>
-          <View style={styles.successIconCircle}>
-            <Text style={styles.successIcon}>✓</Text>
-          </View>
-          <Text style={styles.successTitle}>Item instantly listed to Market!</Text>
-          <Text style={styles.successText}>Your item is now live in the premium thrift feed with the 8% seller fee applied.</Text>
-          <Pressable style={styles.successButton} accessibilityRole="button" accessibilityLabel="Dismiss success message" onPress={onClose}>
-            <Text style={styles.successButtonText}>Done</Text>
-          </Pressable>
+    <View style={styles.successOverlay}>
+      <View style={styles.successCard}>
+        <View style={styles.successIconCircle}>
+          <Text style={styles.successIcon}>✓</Text>
         </View>
+        <Text style={styles.successTitle}>Item instantly listed to Market!</Text>
+        <Text style={styles.successText}>Your item is now live in the premium thrift feed with the 8% seller fee applied.</Text>
+        <Pressable style={styles.successButton} accessibilityRole="button" accessibilityLabel="Dismiss success message" onPress={onClose}>
+          <Text style={styles.successButtonText}>Done</Text>
+        </Pressable>
       </View>
-    </Modal>
+    </View>
   );
 }
 
@@ -986,10 +1003,11 @@ const styles = StyleSheet.create({
   detailSafeArea: {
     flex: 1,
     backgroundColor: palette.background,
+    position: 'relative',
   },
   detailContent: {
     padding: 20,
-    paddingBottom: 36,
+    paddingBottom: 144,
   },
   detailHeaderRow: {
     alignItems: 'center',
@@ -1088,7 +1106,8 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: 'center',
     marginTop: 20,
-    minHeight: 60,
+    marginBottom: 24,
+    minHeight: 64,
     shadowColor: palette.sellDark,
     shadowOffset: { width: 0, height: 14 },
     shadowOpacity: 0.28,
@@ -1105,11 +1124,12 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   successOverlay: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     backgroundColor: 'rgba(45, 41, 38, 0.36)',
-    flex: 1,
     justifyContent: 'center',
     padding: 24,
+    zIndex: 50,
   },
   successCard: {
     alignItems: 'center',
