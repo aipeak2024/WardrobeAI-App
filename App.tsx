@@ -1,7 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
+import * as ImagePicker from 'expo-image-picker';
 import {
+  Alert,
   FlatList,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -297,6 +300,27 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
   const [color, setColor] = React.useState('柔和象牙白');
   const [brand, setBrand] = React.useState('無品牌');
   const [condition, setCondition] = React.useState('極佳');
+  const [selectedImageUri, setSelectedImageUri] = React.useState<string | null>(null);
+
+  const handlePickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert('需要照片權限', '請允許 WardrobeAI 存取你的照片，才能新增衣物照片。');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 5],
+      quality: 0.9,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setSelectedImageUri(result.assets[0].uri);
+    }
+  };
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -326,12 +350,23 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <Pressable style={styles.cameraPlaceholder} accessibilityRole="button" accessibilityLabel="新增衣物照片">
-              <View style={styles.cameraIconCircle}>
-                <Text style={styles.cameraIcon}>⌁</Text>
-              </View>
-              <Text style={styles.cameraTitle}>新增照片</Text>
-              <Text style={styles.cameraHint}>點選拍攝或上傳你的衣物</Text>
+            <Pressable
+              style={[styles.cameraPlaceholder, selectedImageUri && styles.cameraPlaceholderWithImage]}
+              accessibilityRole="button"
+              accessibilityLabel="新增衣物照片"
+              onPress={handlePickImage}
+            >
+              {selectedImageUri ? (
+                <Image source={{ uri: selectedImageUri }} style={styles.selectedUploadImage} />
+              ) : (
+                <>
+                  <View style={styles.cameraIconCircle}>
+                    <Text style={styles.cameraIcon}>⌁</Text>
+                  </View>
+                  <Text style={styles.cameraTitle}>新增照片</Text>
+                  <Text style={styles.cameraHint}>點選拍攝或上傳你的衣物</Text>
+                </>
+              )}
             </Pressable>
 
             <View style={styles.aiCard}>
@@ -875,6 +910,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.11,
     shadowRadius: 24,
     elevation: 3,
+  },
+  cameraPlaceholderWithImage: {
+    overflow: 'hidden',
+    padding: 0,
+  },
+  selectedUploadImage: {
+    borderRadius: 34,
+    height: '100%',
+    width: '100%',
   },
   cameraIconCircle: {
     alignItems: 'center',
