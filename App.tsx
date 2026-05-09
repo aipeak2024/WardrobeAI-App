@@ -58,77 +58,77 @@ type MarketItem = {
 };
 
 const tabs: TabItem[] = [
-  { key: 'home', label: 'Home', title: 'Dashboard', icon: '⌂' },
-  { key: 'closet', label: 'My Closet', title: 'My Closet', icon: '♢' },
-  { key: 'stylist', label: 'AI Stylist', title: 'AI Stylist', icon: '✦' },
-  { key: 'market', label: 'Market', title: 'Market', icon: '□' },
-  { key: 'profile', label: 'Profile', title: 'Profile', icon: '○' },
+  { key: 'home', label: '首頁', title: '儀表板', icon: '⌂' },
+  { key: 'closet', label: '我的衣櫥', title: '我的衣櫥', icon: '♢' },
+  { key: 'stylist', label: 'AI 造型師', title: 'AI 造型師', icon: '✦' },
+  { key: 'market', label: '二手市場', title: '二手市場', icon: '□' },
+  { key: 'profile', label: '個人檔案', title: '個人檔案', icon: '○' },
 ];
 
 const clothingItems: ClothingItem[] = [
   {
     id: '1',
-    name: 'Cream Knit',
-    category: 'Sweater',
+    name: '奶油針織衫',
+    category: '毛衣',
     color: '#E8DDCF',
     brand: 'Atelier Muse',
-    condition: 'Excellent',
+    condition: '極佳',
     estimatedPrice: '$58',
   },
   {
     id: '2',
-    name: 'Linen Shirt',
-    category: 'Top',
+    name: '亞麻襯衫',
+    category: '上衣',
     color: '#F5EEE6',
     brand: 'Everlane',
-    condition: 'Very good',
+    condition: '很好',
     estimatedPrice: '$42',
   },
   {
     id: '3',
-    name: 'Camel Coat',
-    category: 'Outerwear',
+    name: '駝色大衣',
+    category: '外套',
     color: '#C9A37A',
     brand: 'Cuyana',
-    condition: 'Excellent',
+    condition: '極佳',
     estimatedPrice: '$128',
   },
   {
     id: '4',
-    name: 'Soft Trousers',
-    category: 'Bottoms',
+    name: '柔軟長褲',
+    category: '下身',
     color: '#D8C6B4',
     brand: 'Aritzia',
-    condition: 'Good',
+    condition: '良好',
     estimatedPrice: '$64',
   },
   {
     id: '5',
-    name: 'Silk Scarf',
-    category: 'Accessory',
+    name: '絲質圍巾',
+    category: '配件',
     color: '#EAD3C3',
-    brand: 'Vintage',
-    condition: 'Excellent',
+    brand: '復古選物',
+    condition: '極佳',
     estimatedPrice: '$36',
   },
   {
     id: '6',
-    name: 'Taupe Flats',
-    category: 'Shoes',
+    name: '灰褐色平底鞋',
+    category: '鞋履',
     color: '#BCA892',
     brand: 'Margaux',
-    condition: 'Very good',
+    condition: '很好',
     estimatedPrice: '$74',
   },
 ];
 
 const marketItems: MarketItem[] = [
-  { id: 'm1', name: 'Cashmere Crew', brand: 'Naadam', price: '$72', color: '#DCCDBB', condition: 'Excellent' },
-  { id: 'm2', name: 'Silk Button-Up', brand: 'Equipment', price: '$54', color: '#F2E8D9', condition: 'Very good' },
-  { id: 'm3', name: 'Wool Wrap Coat', brand: 'Cuyana', price: '$148', color: '#B88E65', condition: 'Excellent' },
-  { id: 'm4', name: 'Pleated Trouser', brand: 'Aritzia', price: '$68', color: '#D4C0AA', condition: 'Good' },
-  { id: 'm5', name: 'Minimal Loafer', brand: 'Vagabond', price: '$86', color: '#A9937E', condition: 'Very good' },
-  { id: 'm6', name: 'Satin Midi Skirt', brand: 'Reformation', price: '$78', color: '#E7C7B6', condition: 'Excellent' },
+  { id: 'm1', name: '喀什米爾圓領衫', brand: 'Naadam', price: '$72', color: '#DCCDBB', condition: '極佳' },
+  { id: 'm2', name: '絲質排釦襯衫', brand: 'Equipment', price: '$54', color: '#F2E8D9', condition: '很好' },
+  { id: 'm3', name: '羊毛綁帶大衣', brand: 'Cuyana', price: '$148', color: '#B88E65', condition: '極佳' },
+  { id: 'm4', name: '打褶長褲', brand: 'Aritzia', price: '$68', color: '#D4C0AA', condition: '良好' },
+  { id: 'm5', name: '極簡樂福鞋', brand: 'Vagabond', price: '$86', color: '#A9937E', condition: '很好' },
+  { id: 'm6', name: '緞面中長裙', brand: 'Reformation', price: '$78', color: '#E7C7B6', condition: '極佳' },
 ];
 
 export default function App() {
@@ -163,7 +163,7 @@ export default function App() {
           <Pressable
             style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}
             accessibilityRole="button"
-            accessibilityLabel="Add clothing item"
+            accessibilityLabel="新增衣物"
             onPress={() => setUploadVisible(true)}
             hitSlop={12}
           >
@@ -187,8 +187,8 @@ function Header({ activeTab }: { activeTab: TabKey }) {
   const currentTab = tabs.find((tab) => tab.key === activeTab) ?? tabs[1];
   const subtitle =
     activeTab === 'market'
-      ? 'Discover premium secondhand pieces and list your wardrobe in a tap.'
-      : 'Curate, style, and rediscover your wardrobe with calm confidence.';
+      ? '探索高質感二手單品，並一鍵上架你的衣櫥。'
+      : '從容整理、搭配並重新發現你的衣櫥。';
 
   return (
     <View style={styles.header}>
@@ -218,12 +218,12 @@ function ClosetGrid({
       ListHeaderComponent={
         <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitle}>Recently added</Text>
-            <Text style={styles.sectionSubtitle}>6 pieces ready to style or sell</Text>
+            <Text style={styles.sectionTitle}>最近新增</Text>
+            <Text style={styles.sectionSubtitle}>6 件單品可搭配或上架</Text>
           </View>
-          <Pressable style={styles.filterPill} accessibilityRole="button" accessibilityLabel="Filter closet items">
+          <Pressable style={styles.filterPill} accessibilityRole="button" accessibilityLabel="篩選衣櫥單品">
             <Text style={styles.filterIcon}>☰</Text>
-            <Text style={styles.filterText}>Filter</Text>
+            <Text style={styles.filterText}>篩選</Text>
           </Pressable>
         </View>
       }
@@ -237,7 +237,7 @@ function ClosetItemCard({ item, onPress }: { item: ClothingItem; onPress: () => 
     <Pressable
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       accessibilityRole="button"
-      accessibilityLabel={`View ${item.name} details`}
+      accessibilityLabel={`查看 ${item.name} 詳情`}
       onPress={onPress}
     >
       <View style={[styles.placeholder, { backgroundColor: item.color }]}>
@@ -263,11 +263,11 @@ function MarketScreen({ columns }: { columns: number }) {
       ListHeaderComponent={
         <View style={styles.marketHero}>
           <View>
-            <Text style={styles.marketEyebrow}>Curated drops</Text>
-            <Text style={styles.marketTitle}>Premium thrift, instantly shoppable.</Text>
+            <Text style={styles.marketEyebrow}>精選上新</Text>
+            <Text style={styles.marketTitle}>高質感二手選物，即刻入手。</Text>
           </View>
           <View style={styles.marketBadge}>
-            <Text style={styles.marketBadgeText}>8% seller fee</Text>
+            <Text style={styles.marketBadgeText}>8% 賣家手續費</Text>
           </View>
         </View>
       }
@@ -293,10 +293,10 @@ function MarketItemCard({ item }: { item: MarketItem }) {
 }
 
 function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
-  const [category, setCategory] = React.useState('Tops');
-  const [color, setColor] = React.useState('Soft ivory');
-  const [brand, setBrand] = React.useState('Unbranded');
-  const [condition, setCondition] = React.useState('Excellent');
+  const [category, setCategory] = React.useState('上衣');
+  const [color, setColor] = React.useState('柔和象牙白');
+  const [brand, setBrand] = React.useState('無品牌');
+  const [condition, setCondition] = React.useState('極佳');
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -309,14 +309,14 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
             <Pressable
               style={styles.closeButton}
               accessibilityRole="button"
-              accessibilityLabel="Close upload item"
+              accessibilityLabel="關閉新增衣物"
               onPress={onClose}
             >
               <Text style={styles.closeButtonText}>×</Text>
             </Pressable>
             <View style={styles.uploadHeaderCopy}>
-              <Text style={styles.uploadEyebrow}>New wardrobe piece</Text>
-              <Text style={styles.uploadTitle}>Upload Item</Text>
+              <Text style={styles.uploadEyebrow}>新增衣櫥單品</Text>
+              <Text style={styles.uploadTitle}>新增衣物</Text>
             </View>
             <View style={styles.closeButtonSpacer} />
           </View>
@@ -326,33 +326,33 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <Pressable style={styles.cameraPlaceholder} accessibilityRole="button" accessibilityLabel="Add a clothing photo">
+            <Pressable style={styles.cameraPlaceholder} accessibilityRole="button" accessibilityLabel="新增衣物照片">
               <View style={styles.cameraIconCircle}>
                 <Text style={styles.cameraIcon}>⌁</Text>
               </View>
-              <Text style={styles.cameraTitle}>Add a photo</Text>
-              <Text style={styles.cameraHint}>Tap to capture or upload your item</Text>
+              <Text style={styles.cameraTitle}>新增照片</Text>
+              <Text style={styles.cameraHint}>點選拍攝或上傳你的衣物</Text>
             </Pressable>
 
             <View style={styles.aiCard}>
               <View style={styles.aiHeaderRow}>
                 <View>
-                  <Text style={styles.aiEyebrow}>Instant recognition</Text>
-                  <Text style={styles.aiTitle}>AI Auto-Generated Tags</Text>
+                  <Text style={styles.aiEyebrow}>即時辨識</Text>
+                  <Text style={styles.aiTitle}>AI 自動生成標籤</Text>
                 </View>
                 <View style={styles.aiBadge}>
                   <Text style={styles.aiBadgeText}>AI</Text>
                 </View>
               </View>
               <Text style={styles.aiDescription}>
-                Review the suggested details, make quick edits, then save it to your closet.
+                檢視建議細節，快速編輯後儲存至衣櫥。
               </Text>
 
               <View style={styles.formGrid}>
-                <FormField label="Category" value={category} onChangeText={setCategory} placeholder="Tops, Bottoms" />
-                <FormField label="Color" value={color} onChangeText={setColor} placeholder="Ivory, Navy" />
-                <FormField label="Brand" value={brand} onChangeText={setBrand} placeholder="Brand name" />
-                <FormField label="Condition" value={condition} onChangeText={setCondition} placeholder="New, Excellent" />
+                <FormField label="類別" value={category} onChangeText={setCategory} placeholder="上衣、下身" />
+                <FormField label="顏色" value={color} onChangeText={setColor} placeholder="象牙白、海軍藍" />
+                <FormField label="品牌" value={brand} onChangeText={setBrand} placeholder="品牌名稱" />
+                <FormField label="狀態" value={condition} onChangeText={setCondition} placeholder="全新、極佳" />
               </View>
             </View>
           </ScrollView>
@@ -361,10 +361,10 @@ function UploadItemModal({ visible, onClose }: { visible: boolean; onClose: () =
             <Pressable
               style={styles.saveButton}
               accessibilityRole="button"
-              accessibilityLabel="Save item to wardrobe"
+              accessibilityLabel="儲存衣物至衣櫥"
               onPress={onClose}
             >
-              <Text style={styles.saveButtonText}>Save to Wardrobe</Text>
+              <Text style={styles.saveButtonText}>儲存至衣櫥</Text>
             </Pressable>
           </View>
         </KeyboardAvoidingView>
@@ -392,10 +392,10 @@ function ItemDetailModal({
         {item && (
           <ScrollView contentContainerStyle={styles.detailContent} showsVerticalScrollIndicator={false}>
             <View style={styles.detailHeaderRow}>
-              <Pressable style={styles.closeButton} accessibilityRole="button" accessibilityLabel="Close item detail" onPress={onClose}>
+              <Pressable style={styles.closeButton} accessibilityRole="button" accessibilityLabel="關閉衣物詳情" onPress={onClose}>
                 <Text style={styles.closeButtonText}>×</Text>
               </Pressable>
-              <Text style={styles.detailHeaderTitle}>Item Detail</Text>
+              <Text style={styles.detailHeaderTitle}>衣物詳情</Text>
               <View style={styles.closeButtonSpacer} />
             </View>
 
@@ -410,22 +410,22 @@ function ItemDetailModal({
               <Text style={styles.detailBrand}>{item.brand}</Text>
               <Text style={styles.detailName}>{item.name}</Text>
               <View style={styles.detailMetaGrid}>
-                <DetailMeta label="Category" value={item.category} />
-                <DetailMeta label="Condition" value={item.condition} />
-                <DetailMeta label="AI price" value={item.estimatedPrice} />
-                <DetailMeta label="Fee" value="8%" />
+                <DetailMeta label="類別" value={item.category} />
+                <DetailMeta label="狀態" value={item.condition} />
+                <DetailMeta label="AI 估價" value={item.estimatedPrice} />
+                <DetailMeta label="手續費" value="8%" />
               </View>
               <Text style={styles.detailDescription}>
-                WardrobeAI can create a premium listing from your saved item details, suggested price, and closet photo.
+                WardrobeAI 可根據已儲存的衣物資訊、建議價格與衣櫥照片，建立高質感商品頁。
               </Text>
               <Pressable
                 style={({ pressed }) => [styles.sellButton, pressed && styles.sellButtonPressed]}
                 accessibilityRole="button"
-                accessibilityLabel={`Sell ${item.name} on Market with an 8 percent fee`}
+                accessibilityLabel={`以 8% 手續費將 ${item.name} 上架至二手市場`}
                 onPress={onSell}
                 hitSlop={10}
               >
-                <Text style={styles.sellButtonText}>Sell on Market (8% Fee)</Text>
+                <Text style={styles.sellButtonText}>一鍵上架 (8% 手續費)</Text>
               </Pressable>
             </View>
           </ScrollView>
@@ -447,10 +447,10 @@ function SellSuccessModal({ visible, onClose }: { visible: boolean; onClose: () 
         <View style={styles.successIconCircle}>
           <Text style={styles.successIcon}>✓</Text>
         </View>
-        <Text style={styles.successTitle}>Item instantly listed to Market!</Text>
-        <Text style={styles.successText}>Your item is now live in the premium thrift feed with the 8% seller fee applied.</Text>
-        <Pressable style={styles.successButton} accessibilityRole="button" accessibilityLabel="Dismiss success message" onPress={onClose}>
-          <Text style={styles.successButtonText}>Done</Text>
+        <Text style={styles.successTitle}>商品已成功上架至市場！</Text>
+        <Text style={styles.successText}>你的商品已在高質感二手市場中上架，並套用 8% 賣家手續費。</Text>
+        <Pressable style={styles.successButton} accessibilityRole="button" accessibilityLabel="關閉成功訊息" onPress={onClose}>
+          <Text style={styles.successButtonText}>完成</Text>
         </Pressable>
       </View>
     </View>
@@ -501,7 +501,7 @@ function ComingSoon({ tab }: { tab: TabKey }) {
         <Text style={styles.emptyIconText}>{currentTab.icon}</Text>
       </View>
       <Text style={styles.emptyTitle}>{currentTab.title}</Text>
-      <Text style={styles.emptyText}>This space is ready for the next WardrobeAI feature.</Text>
+      <Text style={styles.emptyText}>這個區域已準備好迎接下一個 WardrobeAI 功能。</Text>
     </View>
   );
 }
